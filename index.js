@@ -47,7 +47,7 @@ function validateRequest(options) {
     reject("[BotBye] Init script wasn't called");
   }
 
-  customFields = customFields || [];
+  customFields = customFields || {};
 
   requestInfo["created_at"] = Date.now() / 1000;
 

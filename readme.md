@@ -56,11 +56,9 @@ const requestInfo = {
 /**
  * Additional custom fields for linking request
  **/
-const customFields = [
-    'custom field 1 value',
-    'custom field 2 value',
-    'custom field 3 value',
-]
+const customFields = {
+    someKey: "some-value"
+}
 
 const options = {
     token, // BotBye token from client-side

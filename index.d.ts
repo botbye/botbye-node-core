@@ -25,7 +25,7 @@ export type TValidateRequestOptions = {
   token: string;
   headers: THeaders;
   requestInfo: TRequestInfo;
-  customFields?: string[];
+  customFields?: Record<string, string>;
 }
 
 export type TBotByeInitOptions = {
