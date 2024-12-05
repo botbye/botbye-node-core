@@ -34,7 +34,7 @@ var keepAliveAgent = new https.Agent({
   keepAlive: true,
 });
 
-var url = `api.botbye.com`;
+var url = `verify.botbye.com`;
 var path = '/validate-request/v2';
 
 function validateRequest(options) {
