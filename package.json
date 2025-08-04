@@ -2,6 +2,6 @@
   "name": "botbye-node-core",
   "packageManager": "yarn@3.4.1",
   "main": "index.js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false
 }

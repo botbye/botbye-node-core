@@ -35,3 +35,5 @@ export type TBotByeInitOptions = {
 export function init(options: TBotByeInitOptions): typeof validateRequest;
 
 export function validateRequest(options: TValidateRequestOptions): Promise<TBotByeResponse>;
+
+export function initPackageInfo(packageInfo: {name: string, version: string}): void;
