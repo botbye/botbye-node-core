@@ -49,8 +49,6 @@ function validateRequest(options) {
 
   customFields = customFields || {};
 
-  requestInfo["created_at"] = Date.now() / 1000;
-
 
   var requestData = JSON.stringify({
     request_info: requestInfo,

@@ -17,8 +17,6 @@ export type TRequestInfo = {
   remote_addr: string;
   request_method: string;
   request_uri: string;
-  server_port: string;
-  server_name: string;
 };
 
 export type TValidateRequestOptions = {
