@@ -23,9 +23,77 @@ function getNetworkErrorResponse(message) {
   }
 }
 
+function makeRequest(options, requestData, apiOptions) {
+  apiOptions = apiOptions || {};
+  return new Promise(function (resolve, reject) {
+    const request = https.request(options, function (response) {
+      var data = '';
+      if (apiOptions.encoding) {
+        response.setEncoding(apiOptions.encoding);
+      }
+
+      response.on("data", function (chunk) {
+        apiOptions.onData && apiOptions.onData(chunk);
+        data += chunk;
+      });
+
+      response.on('end', function () {
+        resolve(data);
+      });
+    });
+
+    request.on('error', function (e) {
+      reject(e);
+    });
+
+    request.on("close", function (e) {
+      reject(e);
+    })
+
+
+    requestData && request.write(requestData);
+    request.end();
+
+    apiOptions.addAbortCb && apiOptions.addAbortCb(function () {
+      if (!request.aborted && !request.closed) {
+        request.abort();
+      }
+    });
+  });
+}
+
+function sendInitRequest(serverKey) {
+  var callOptions = {
+    hostname: url,
+    path: "/init-request/v1",
+    method: 'POST',
+  }
+
+  var postData = JSON.stringify({
+    serverKey: serverKey
+  });
+
+  makeRequest(callOptions, postData).then(function (data) {
+    try {
+      var parsed = JSON.parse(data);
+
+      if (parsed.error) {
+        throw new Error(parsed.error)
+      }
+
+      if (parsed.status === "ok") {
+        console.log("[BotBye] Inited")
+      }
+    } catch (e) {
+      console.log("[BotBye] Init Error: ", e)
+    }
+  })
+}
 
 function init(options) {
   SERVER_KEY = options.serverKey;
+
+  sendInitRequest(SERVER_KEY);
 
   return validateRequest;
 }
@@ -71,44 +139,35 @@ function validateRequest(options) {
       agent: keepAliveAgent,
     };
 
+    var abortCbs = [];
+
     var timer = setTimeout(function () {
-      resolve(getNetworkErrorResponse("Connection timeout"))
+      resolve(getNetworkErrorResponse("Connection timeout"));
+      abortCbs.forEach(function (cb) {
+        cb();
+      })
     }, 1000);
 
-    var req = https.request(options, function (res) {
-      var data = '';
-
-      res.on('data', function (chunk) {
-        if (timer !== null) {
-          clearTimeout(timer)
-          timer = null
+    makeRequest(options, requestData, {
+      onData: function () {
+        clearTimeout(timer);
+      },
+      addAbortCb: function (cb) {
+        abortCbs.push(cb)
+      },
+    }).then(function (data) {
+      try {
+        resolve(JSON.parse(data));
+      } catch (e) {
+        var message = ""
+        if (e instanceof Error) {
+          message = e.message
         }
-        data += chunk;
-      });
-
-      res.on('end', function () {
-        try {
-          resolve(JSON.parse(data));
-        } catch (e) {
-          var message = ""
-          if (e instanceof Error) {
-            message = e.message
-          }
-          resolve(getNetworkErrorResponse(message))
-        }
-      });
-    });
-
-    req.on('error', function (e) {
-      if (timer !== null) {
-        clearTimeout(timer)
-        timer = null
+        resolve(getNetworkErrorResponse(message))
       }
-      resolve(getNetworkErrorResponse(e.message))
+    }).catch(function (e) {
+      resolve(getNetworkErrorResponse((e && e.message) || "Unexpected error"))
     });
-
-    req.write(requestData);
-    req.end();
   });
 }
 
