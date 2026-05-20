@@ -1,0 +1,20 @@
+type TPrettify<T, D extends 1[] = []> = D["length"] extends 2 ? T : T extends infer O ? O extends object ? {
+    [K in keyof O]: TPrettify<O[K], [...D, 1]>;
+} & {} : O : never;
+type TNil = undefined | null;
+type TNullable<T> = T | TNil;
+type TAnyObject = Record<string, unknown>;
+type TStringKeyOf<Object extends TAnyObject> = Extract<keyof Object, string>;
+declare const isNotNil: <T>(value: T) => value is Exclude<T, null | undefined>;
+declare const isString: (value: unknown) => value is string;
+declare const isNumber: (value: unknown) => value is number;
+declare const isObject: (value: unknown) => value is TAnyObject;
+declare const isPlainObject: (value: unknown) => value is TAnyObject;
+declare const toString: (value: unknown) => string;
+declare const isKeyExist: (obj: TAnyObject, key: string) => boolean;
+declare const withTimeout: <T>(promise: Promise<T>, timeoutMs: number, errorCode: string) => Promise<Awaited<T>>;
+declare const extractMessageFromError: (e: unknown) => string;
+declare const getIpFromHeaders: (headers: unknown) => string | null;
+type TExplicitAny = any;
+declare const once: <TCallback extends (...args: TExplicitAny[]) => void>(cb: TCallback) => TCallback;
+export { type TPrettify, type TNullable, type TAnyObject, type TStringKeyOf, type TExplicitAny, isString, isPlainObject, isNotNil, toString, isKeyExist, withTimeout, isNumber, isObject, extractMessageFromError, getIpFromHeaders, once, };

@@ -1,7 +1,43 @@
 {
-  "name": "botbye-node-core",
-  "packageManager": "yarn@3.4.1",
-  "main": "index.js",
-  "version": "1.0.8",
-  "private": false
+  "name": "@botbye/node-core",
+  "version": "2.0.0",
+  "description": "BotBye! core module for Node.js",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./src/index.js",
+      "types": "./src/index.d.ts"
+    },
+    "./node-http-client": {
+      "import": "./src/HttpClients/Clients/NodeHttpClient/NodeHttpClient.js",
+      "require": "./src/HttpClients/Clients/NodeHttpClient/NodeHttpClient.js",
+      "types": "./src/HttpClients/Clients/NodeHttpClient/NodeHttpClient.d.ts"
+    },
+    "./fetch-http-client": {
+      "import": "./src/HttpClients/Clients/FetchHttpClient/FetchHttpClient.js",
+      "require": "./src/HttpClients/Clients/FetchHttpClient/FetchHttpClient.js",
+      "types": "./src/HttpClients/Clients/FetchHttpClient/FetchHttpClient.d.ts"
+    },
+    "./utils": {
+      "import": "./src/Global/Utils.js",
+      "require": "./src/Global/Utils.js",
+      "types": "./src/Global/Utils.d.ts"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://botbye.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/botbye/botbye-node-core"
+  }
 }
