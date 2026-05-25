@@ -3,9 +3,7 @@ declare const EVALUATE_DECISIONS: readonly ["ALLOW", "BLOCK", "CHALLENGE"];
 type TDecision = (typeof EVALUATE_DECISIONS)[number];
 type TCommonEvaluationResult = {
     decision: TDecision;
-    config: {
-        bypass_bot_validation: boolean;
-    };
+    botbye_result?: string;
 };
 type TSuccessfulEvaluationResult = TCommonEvaluationResult & {
     scores: Record<string, number>;

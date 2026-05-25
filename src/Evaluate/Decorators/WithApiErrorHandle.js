@@ -25,7 +25,7 @@ var isValidResponse = function (response) {
     if (!("scores" in response) || !(0, Utils_1.isPlainObject)(response.scores)) {
         return false;
     }
-    if (!("config" in response) || !(0, Utils_1.isPlainObject)(response.config)) {
+    if (("botbye_result" in response) && !(0, Utils_1.isString)(response.botbye_result)) {
         return false;
     }
     return true;

@@ -61,7 +61,9 @@ var nodeHttpClient = {
             var request = transport.request(requestOptions, function (response) {
                 var data = "";
                 if (response.statusCode !== 200) {
-                    abort();
+                    reject(new Error(Constants_1.REQUEST_ERROR_CODE));
+                    response.resume();
+                    return;
                 }
                 response.on("data", function (chunk) {
                     data += chunk;

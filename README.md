@@ -192,7 +192,6 @@ Use at the edge — API gateway, route handler, middleware — when you just wan
     // Option B: explicit fields
     | { ip: string; headers: Record<string, string>; requestMethod?: string | null; requestUri?: string | null; token?: string | null };
   customFields?: Record<string, string>;
-  config?: { bypassBotValidation?: boolean | null };
 }
 ```
 
@@ -247,7 +246,6 @@ Use inside services that already know the user: auth, payments, account manageme
   };
   customFields?: Record<string, string>;
   botbyeResult?: string;
-  config?: { bypassBotValidation?: boolean | null };
 }
 ```
 
@@ -276,6 +274,47 @@ async function onLoginAttempt({ ip, userId, email, loginSucceeded }) {
 }
 ```
 
+#### Linking `validate` and `risk` events
+
+When the same request is evaluated at two layers — for example, once at the edge (`type: "validate"`) and then again inside a domain service (`type: "risk"`) — BotBye can link both events and display them as a single event in the dashboard.
+
+The `validate` response includes a `botbye_result` string. Pass it as `botbyeResult` in the subsequent `risk` call to establish the link:
+
+```javascript
+// Edge layer — validate the bot token
+const edgeResult = await evaluate({
+  type: "validate",
+  request: {
+    ip,
+    headers,
+    requestMethod: method,
+    requestUri: url,
+    token,
+  },
+});
+
+// Pass edgeResult.botbye_result to your domain service however you like —
+// a request header, a context object, a function argument, etc.
+const edgeBotbyeResult = edgeResult.botbye_result;
+
+// Domain service — risk scoring linked to the edge validation above
+const riskResult = await evaluate({
+  type: "risk",
+  request: { ip },
+  event: {
+    type: "login",
+    status: loginSucceeded ? "SUCCESSFUL" : "FAILED",
+  },
+  user: {
+    accountId: userId,
+    email,
+  },
+  botbyeResult: edgeBotbyeResult,
+});
+```
+
+`botbye_result` is optional in the response — if it is absent, omit `botbyeResult` and the events will be recorded independently.
+
 ---
 
 ### `full` — edge check and domain scoring in one call
@@ -303,7 +342,6 @@ Use when you have all context at once: raw request, token, user, and event. A lo
     phone?: string | null;
   };
   customFields?: Record<string, string>;
-  config?: { bypassBotValidation?: boolean | null };
 }
 ```
 
@@ -355,11 +393,11 @@ type TEvaluationResult =
       risk_score: number;
       scores: Record<string, number>;
       signals: string[];
-      config: { bypass_bot_validation: boolean };
+      botbye_result?: string;
     }
   | {
       decision: "ALLOW";
-      config: { bypass_bot_validation: boolean };
+      botbye_result?: string;
       error: { message: string };
     };
 ```
@@ -382,8 +420,7 @@ Blocked (bot detected):
   "decision": "BLOCK",
   "risk_score": 0.95,
   "scores": { "bot": 0.95 },
-  "signals": ["AutomationTool"],
-  "config": { "bypass_bot_validation": false }
+  "signals": ["AutomationTool"]
 }
 ```
 
@@ -395,8 +432,7 @@ Allowed:
   "decision": "ALLOW",
   "risk_score": 0.05,
   "scores": { "bot": 0.05, "ato": 0.02 },
-  "signals": [],
-  "config": { "bypass_bot_validation": false }
+  "signals": []
 }
 ```
 
@@ -409,8 +445,7 @@ Challenge:
   "risk_score": 0.65,
   "scores": { "bot": 0.65 },
   "signals": ["SuspiciousFingerprint"],
-  "challenge": { "type": "captcha", "token": "..." },
-  "config": { "bypass_bot_validation": false }
+  "challenge": { "type": "captcha", "token": "..." }
 }
 ```
 
@@ -419,7 +454,6 @@ Invalid `serverKey`:
 ```json
 {
   "decision": "ALLOW",
-  "config": { "bypass_bot_validation": true },
   "error": { "message": "[BotBye] Bad Request: Invalid Server Key" }
 }
 ```

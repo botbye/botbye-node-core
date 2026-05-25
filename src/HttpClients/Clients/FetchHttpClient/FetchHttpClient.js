@@ -18,7 +18,9 @@ var fetchHttpClient = {
             keepalive: init.keepalive,
             signal: controller.signal,
         }).then(function (r) {
+            var _a;
             if (!r.ok) {
+                void ((_a = r.body) === null || _a === void 0 ? void 0 : _a.cancel());
                 throw new Error(Constants_1.REQUEST_ERROR_CODE);
             }
             return r.text();

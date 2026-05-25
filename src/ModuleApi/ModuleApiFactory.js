@@ -8,6 +8,7 @@ var EvaluateWithExtractor_1 = require("../Evaluate/Decorators/EvaluateWithExtrac
 var Utils_1 = require("../Global/Utils");
 var WithAnyErrorHandle_1 = require("../Evaluate/Decorators/WithAnyErrorHandle");
 var InitTypeguards_1 = require("./InitTypeguards");
+var Constants_1 = require("./Constants");
 var decorateLogger = function (logger) { return (0, Mixins_1.withTryCatch)((0, Mixins_1.withLogLevel)((0, Mixins_1.withPackageName)((0, Mixins_1.withSafeMixins)(logger)))); };
 var DEFAULT_LOG_LEVEL = "info";
 var moduleApiFactory = function (options) {
@@ -17,7 +18,7 @@ var moduleApiFactory = function (options) {
     var GLOBAL_OPTIONS = {
         url: (_a = options.url) !== null && _a !== void 0 ? _a : "https://verify.botbye.com",
         serverKey: "",
-        module: options.module || { name: "NODE_CORE", version: "2.0.0" },
+        module: options.module || { name: Constants_1.MODULE_NAME, version: Constants_1.MODULE_VERSION },
         httpClient: options.httpClient,
         logger: logger,
     };

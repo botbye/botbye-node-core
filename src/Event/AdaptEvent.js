@@ -7,7 +7,6 @@ var Utils_2 = require("./Utils");
 var RequestInfoAdapter_1 = require("./EventAdapters/RequestInfoAdapter");
 var EventInfoAdapter_1 = require("./EventAdapters/EventInfoAdapter");
 var UserInfoAdapter_1 = require("./EventAdapters/UserInfoAdapter");
-var EvaluateConfigAdapter_1 = require("./EventAdapters/EvaluateConfigAdapter");
 var CustomFieldsAdapter_1 = require("./EventAdapters/CustomFieldsAdapter");
 var adaptEvent = function (baseEvent, global) {
     var row = (0, Utils_1.isPlainObject)(baseEvent) ? baseEvent : {};
@@ -21,7 +20,6 @@ var adaptEvent = function (baseEvent, global) {
     if (eventType === "validate") {
         (0, Utils_2.fieldRequiredLog)(row, global.logger, "request", "validate event");
         (0, Utils_2.sanitize)(row, adaptedEvent, "request", "request", RequestInfoAdapter_1.adaptRequestInfoWithRequiredHeaders, global, RequestInfoAdapter_1.FALLBACK_EVENT_REQUEST_INFO);
-        (0, Utils_2.sanitizeIfNotNil)(row, adaptedEvent, "config", "config", EvaluateConfigAdapter_1.adaptEvaluateConfig, global);
         (0, Utils_2.sanitizeIfNotNil)(row, adaptedEvent, "customFields", "custom_fields", CustomFieldsAdapter_1.adaptCustomFields, global);
     }
     if (eventType === "full" || eventType === "risk") {
@@ -35,15 +33,7 @@ var adaptEvent = function (baseEvent, global) {
         (0, Utils_2.sanitizeIfNotNil)(row, adaptedEvent, "customFields", "custom_fields", CustomFieldsAdapter_1.adaptCustomFields, global);
     }
     if (eventType === "risk") {
-        (0, Utils_2.sanitize)(row, adaptedEvent, "config", "config", EvaluateConfigAdapter_1.adaptEvaluateConfig, global, EvaluateConfigAdapter_1.FALLBACK_EVENT_EVALUATE_CONFIG);
-        var riskConfig = adaptedEvent.config;
-        if (!(0, Utils_1.isKeyExist)(riskConfig, "bypass_bot_validation")) {
-            riskConfig["bypass_bot_validation"] = true;
-        }
         (0, Utils_2.sanitizeIfNotNil)(row, adaptedEvent, "botbyeResult", "botbye_result", Utils_1.toString, global);
-    }
-    if (eventType === "full") {
-        (0, Utils_2.sanitizeIfNotNil)(row, adaptedEvent, "config", "config", EvaluateConfigAdapter_1.adaptEvaluateConfig, global);
     }
     return adaptedEvent;
 };

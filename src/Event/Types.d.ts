@@ -18,9 +18,6 @@ type TUpstreamUserInfo = {
     email?: string;
     phone?: string;
 };
-type TUpstreamEvaluateConfig = {
-    bypass_bot_validation?: boolean;
-};
 type TUpstreamCustomFields = Record<string, string>;
 declare const EVENT_VALIDATION_TYPE: readonly ["validate", "risk", "full"];
 type TUpstreamEventValidationType = (typeof EVENT_VALIDATION_TYPE)[number];
@@ -32,7 +29,6 @@ interface IUpstreamFullEvent extends TUpstreamBaseEvent {
     request: TUpstreamRequestInfo;
     event: TUpstreamEventInfo;
     user: TUpstreamUserInfo;
-    config?: TUpstreamEvaluateConfig;
     custom_fields?: TUpstreamCustomFields;
 }
 interface IUpstreamRiskScoringEvent extends TUpstreamBaseEvent {
@@ -40,14 +36,12 @@ interface IUpstreamRiskScoringEvent extends TUpstreamBaseEvent {
     request: TUpstreamRequestInfo;
     event: TUpstreamEventInfo;
     user: TUpstreamUserInfo;
-    config: TUpstreamEvaluateConfig;
     custom_fields?: TUpstreamCustomFields;
     botbye_result?: string;
 }
 interface IUpstreamValidationEvent extends TUpstreamBaseEvent {
     type: "validate";
     request: TUpstreamRequestInfo;
-    config?: TUpstreamEvaluateConfig;
     custom_fields?: TUpstreamCustomFields;
 }
 type TUpstreamEvent = IUpstreamFullEvent | IUpstreamRiskScoringEvent | IUpstreamValidationEvent;
@@ -71,9 +65,6 @@ type TUserInfo = {
     email?: TNullable<string>;
     phone?: TNullable<string>;
 };
-type TEvaluateConfig = {
-    bypassBotValidation?: TNullable<boolean>;
-};
 type TExtendedRequest<RequestObject> = {
     request: RequestObject;
     token?: TNullable<string>;
@@ -84,7 +75,6 @@ interface IFullEvent<Request = TRequestInfo> {
     request: Request;
     event: TEventInfo;
     user: TUserInfo;
-    config?: TEvaluateConfig;
     customFields?: TUpstreamCustomFields;
 }
 interface IRiskScoringEvent<Request = TRiskRequestInfo> {
@@ -92,16 +82,14 @@ interface IRiskScoringEvent<Request = TRiskRequestInfo> {
     request: Request;
     event: TEventInfo;
     user: TUserInfo;
-    config?: TEvaluateConfig;
     customFields?: TUpstreamCustomFields;
     botbyeResult?: string;
 }
 interface IValidationEvent<Request = TRequestInfo> {
     type: "validate";
     request: Request;
-    config?: TEvaluateConfig;
     customFields?: TUpstreamCustomFields;
 }
 type TRiskRequest<T> = T extends TRequestInfo ? TRiskRequestInfo : T;
 type TEvent<Request = TRequestInfo> = IFullEvent<Request> | IRiskScoringEvent<TRiskRequest<Request>> | IValidationEvent<Request>;
-export { EVENT_VALIDATION_TYPE, EVENT_INFO_EVENT_STATUSES, type TUpstreamEventValidationType, type TUpstreamRequestInfo, type TUpstreamEventStatus, type TUpstreamEventInfo, type TUpstreamUserInfo, type TUpstreamEvaluateConfig, type TUpstreamCustomFields, type IUpstreamFullEvent, type IUpstreamRiskScoringEvent, type IUpstreamValidationEvent, type TUpstreamEvent, type TUpstreamBaseEvent, type TRequestInfo, type TRiskRequestInfo, type TEventInfo, type TUserInfo, type TEvaluateConfig, type TExtendedRequest, type TRequestOrExtended, type IFullEvent, type IRiskScoringEvent, type IValidationEvent, type TEvent, };
+export { EVENT_VALIDATION_TYPE, EVENT_INFO_EVENT_STATUSES, type TUpstreamEventValidationType, type TUpstreamRequestInfo, type TUpstreamEventStatus, type TUpstreamEventInfo, type TUpstreamUserInfo, type TUpstreamCustomFields, type IUpstreamFullEvent, type IUpstreamRiskScoringEvent, type IUpstreamValidationEvent, type TUpstreamEvent, type TUpstreamBaseEvent, type TRequestInfo, type TRiskRequestInfo, type TEventInfo, type TUserInfo, type TExtendedRequest, type TRequestOrExtended, type IFullEvent, type IRiskScoringEvent, type IValidationEvent, type TEvent, };

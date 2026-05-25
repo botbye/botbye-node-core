@@ -1,6 +1,6 @@
 {
   "name": "@botbye/node-core",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "BotBye! core module for Node.js",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -28,8 +28,8 @@
   },
   "files": [
     "src",
-    "README.md",
-    "LICENSE"
+    "LICENSE",
+    "README.md"
   ],
   "license": "MIT",
   "publishConfig": {
