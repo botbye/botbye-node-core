@@ -10,6 +10,9 @@ type TSuccessfulEvaluationResult = TCommonEvaluationResult & {
     request_id: string;
     signals: string[];
     risk_score: number;
+    challenge?: {
+        type: "CAPTCHA" | "MFA" | string;
+    };
 };
 type TFailedEvaluationResult = TCommonEvaluationResult & {
     error: {

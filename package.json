@@ -1,6 +1,6 @@
 {
   "name": "@botbye/node-core",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "BotBye! core module for Node.js",
   "main": "src/index.js",
   "types": "src/index.d.ts",

@@ -25,6 +25,12 @@ var isValidResponse = function (response) {
     if (!("scores" in response) || !(0, Utils_1.isPlainObject)(response.scores)) {
         return false;
     }
+    if (("challenge" in response) && (!(0, Utils_1.isPlainObject)(response.challenge) || !(0, Utils_1.isString)(response.challenge.type))) {
+        return false;
+    }
+    if (("botbye_result" in response) && !(0, Utils_1.isString)(response.botbye_result)) {
+        return false;
+    }
     return true;
 };
 var extractMessage = function (e) {
