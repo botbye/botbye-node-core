@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SDK_ERROR = exports.createFallbackEvaluationResult = exports.getIpFromHeaders = exports.moduleApiFactory = void 0;
-var ModuleApiFactory_1 = require("./ModuleApi/ModuleApiFactory");
+exports.phishingModuleApiFactory = exports.SDK_ERROR = exports.createFallbackEvaluationResult = exports.getIpFromHeaders = exports.moduleApiFactory = void 0;
+var ModuleApiFactory_1 = require("./BotFraud/ModuleApi/ModuleApiFactory");
 Object.defineProperty(exports, "moduleApiFactory", { enumerable: true, get: function () { return ModuleApiFactory_1.moduleApiFactory; } });
-var Utils_1 = require("./Global/Utils");
+var Utils_1 = require("./Shared/Global/Utils");
 Object.defineProperty(exports, "getIpFromHeaders", { enumerable: true, get: function () { return Utils_1.getIpFromHeaders; } });
-var Utils_2 = require("./Evaluate/Utils");
+var Utils_2 = require("./BotFraud/Evaluate/Utils");
 Object.defineProperty(exports, "createFallbackEvaluationResult", { enumerable: true, get: function () { return Utils_2.createFallbackEvaluationResult; } });
-var ErrorCodes_1 = require("./Evaluate/ErrorCodes");
+var ErrorCodes_1 = require("./Shared/ErrorCodes");
 Object.defineProperty(exports, "SDK_ERROR", { enumerable: true, get: function () { return ErrorCodes_1.SDK_ERROR; } });
+var Phishing_1 = require("./Phishing");
+Object.defineProperty(exports, "phishingModuleApiFactory", { enumerable: true, get: function () { return Phishing_1.phishingModuleApiFactory; } });

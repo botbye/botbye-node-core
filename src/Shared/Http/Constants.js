@@ -1,0 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.REQUEST_TIMEOUT_ERROR_CODE = exports.REQUEST_ERROR_CODE = void 0;
+var REQUEST_ERROR_CODE = "REQUEST_ERROR";
+exports.REQUEST_ERROR_CODE = REQUEST_ERROR_CODE;
+var REQUEST_TIMEOUT_ERROR_CODE = "REQUEST_TIMEOUT";
+exports.REQUEST_TIMEOUT_ERROR_CODE = REQUEST_TIMEOUT_ERROR_CODE;

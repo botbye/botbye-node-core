@@ -222,7 +222,7 @@ async function handleRequest(ip, headers, method, url, token) {
 
 ### `risk` — domain-level risk scoring
 
-Use inside services that already know the user: auth, payments, account management. The purpose shifts from "is this a bot?" to **"is something suspicious happening for this user?"** — credential stuffing, account takeover, account sharing, logins from a new geo.
+Use inside services that already know the user: auth, payments, account management, etc. The purpose shifts from "is this a bot?" to **"is something suspicious happening for this user?"** — credential stuffing, account takeover, account sharing, logins from a new geo.
 
 **Event fields:**
 
@@ -445,7 +445,7 @@ Challenge:
   "risk_score": 0.65,
   "scores": { "bot": 0.65 },
   "signals": ["SuspiciousFingerprint"],
-  "challenge": { "type": "captcha", "token": "..." }
+  "challenge": { "type": "CAPTCHA", "token": "..." }
 }
 ```
 
@@ -490,6 +490,157 @@ const { dev } = moduleApiFactory({ httpClient: nodeHttpClient });
 
 // Change log verbosity at runtime
 dev.setLoggerLevel("debug"); // "error" | "warn" | "info" | "debug" | "log"
+```
+
+## Anti-Phishing
+
+BotBye's anti-phishing detects look-alike sites that clone your pages to steal credentials. This integration serves the detection **catcher** from your own origin, so the BotBye domain stays hidden from the client.
+
+- [Anti-Phishing Protection overview](https://botbye.com/docs/anti-phishing/overview)
+- [Why a server-side integration is needed](https://botbye.com/docs/anti-phishing/overview#server-integration)
+
+Anti-phishing is identified by its own `clientKey` (available in your Phishing Project in the Dashboard), not the server key used by `evaluate`, so it is configured and wired up separately, via `phishingModuleApiFactory`.
+
+### Configuration
+
+```javascript
+import { phishingModuleApiFactory } from "@botbye/node-core";
+import { nodePhishingHttpClient } from "@botbye/node-core/phishing-node-http-client";
+
+const phishing = phishingModuleApiFactory({
+  httpClient: nodePhishingHttpClient,
+});
+
+phishing.init({
+  // clientKey from your Phishing Project on the Admin Dashboard
+  clientKey: "00000000-0000-0000-0000-000000000000",
+});
+```
+
+Call `phishing.init` once at application startup, before serving any catcher requests.
+
+### `phishingModuleApiFactory` options
+
+| Option | Type | Required | Description |
+|---|---|---|---|
+| `httpClient` | `TPhishingHttpClient` | Yes | HTTP client used for catcher calls. See [HTTP clients](#phishing-http-clients) below. |
+| `catcherRequestInfoExtractor` | `(request: R, global: TPhishingGlobalOptions) => TPhishingCatcherRequestInfo` | No | Converts a custom request object into `{ headers }`, enabling `{ request: R }` in `fetchCatcher`. Same idea as `requestInfoExtractor` above — see [Building a custom integration](#building-a-custom-integration). |
+| `url` | `string` | No | Override BotBye API endpoint. Can also be set via `phishing.init`. |
+
+### Phishing HTTP clients
+
+Phishing calls use their own HTTP client interface (`TPhishingHttpClient`), separate from `evaluate`'s `THttpClient` — the two are not interchangeable. Two built-in clients are available:
+
+| Import path | When to use |
+|---|---|
+| `@botbye/node-core/phishing-node-http-client` | Standard Node.js environments (uses built-in `http`/`https`) |
+| `@botbye/node-core/phishing-fetch-http-client` | Runtimes with the Fetch API (Deno, Bun, edge runtimes) |
+
+### `phishing.init` options
+
+| Option | Type | Required | Description |
+|---|---|---|---|
+| `clientKey` | `string` | Yes | `clientKey` from your Phishing Project on the Admin Dashboard |
+| `url` | `string` | No | Override BotBye API endpoint (default: `https://verify.botbye.com`) |
+| `logger.level` | `"error" \| "warn" \| "info" \| "debug" \| "log"` | No | Log level (default: `"info"`) |
+| `logger.logger` | `TLogger` | No | Custom logger instance implementing `{ error, warn, info, debug, log }` |
+| `timeouts.fetchCatcher` | `number` | No | Timeout in milliseconds for each `fetchCatcher` call |
+
+### Usage
+
+Anti-phishing needs **two routes on your own origin**, each proxied through `fetchCatcher`:
+
+- **SVG route** — serves the SVG catcher. This is the URL your [client](https://botbye.com/docs/anti-phishing/integrations/client/js-tag#getcatcher-options) passes to `getCatcher({ url })`.
+- **PNG route** — serves the PNG that the SVG references (via `innerPngUrl`).
+
+Without `catcherRequestInfoExtractor`, pass `headers` explicitly instead of a request object. For the SVG, `innerPngUrl` must be the **absolute URL** of your PNG route — the browser loads that PNG directly from your origin.
+
+```javascript
+// Absolute URL of your PNG endpoint — the SVG catcher references it through innerPngUrl.
+const PNG_CATCHER_URL = "https://your-site.example/botbye-catcher.png";
+
+async function serveSvgCatcher(headers) {
+  const catcher = await phishing.fetchCatcher({
+    headers,
+    format: "svg",
+    innerPngUrl: PNG_CATCHER_URL, // absolute URL of the PNG endpoint below
+  });
+
+  return { status: catcher.status, headers: catcher.headers, body: catcher.body };
+}
+
+async function servePngCatcher(headers) {
+  const catcher = await phishing.fetchCatcher({ headers, format: "png" });
+
+  return { status: catcher.status, headers: catcher.headers, body: catcher.body };
+}
+```
+
+`fetchCatcher` always returns a `Promise<TUpstreamFetchCatcherResult>`:
+
+```typescript
+type TUpstreamFetchCatcherResult = {
+  status: number;
+  headers: Record<string, string>;
+  body: Uint8Array;
+  error?: { message: string };
+};
+```
+
+Relay `status`, `headers`, and `body` as-is in your response — the exact call depends on your runtime (`res.writeHead`/`res.end`, `new Response(...)`, etc.).
+
+We recommend embedding the **SVG catcher**: it is designed to keep tracking even when a phishing site copies all of your assets to its own infrastructure (the PNG route exists because the SVG catcher relies on it).
+
+### Building a custom integration
+
+Just like `requestInfoExtractor` for `evaluate`, `catcherRequestInfoExtractor` lets `fetchCatcher` accept a framework's native request object directly — `{ request: R }` — instead of `{ headers }`.
+
+```typescript
+import { phishingModuleApiFactory } from "@botbye/node-core";
+import { nodePhishingHttpClient } from "@botbye/node-core/phishing-node-http-client";
+import type { Request } from "express";
+
+const phishing = phishingModuleApiFactory<Request>({
+  httpClient: nodePhishingHttpClient,
+  catcherRequestInfoExtractor: (request) => ({
+    headers: request.headers as Record<string, string>,
+  }),
+});
+
+phishing.init({
+  clientKey: "00000000-0000-0000-0000-000000000000",
+});
+
+// Now fetchCatcher accepts an Express Request directly
+app.get("/botbye-catcher.svg", async (req, res) => {
+  const catcher = await phishing.fetchCatcher({
+    request: req,
+    format: "svg",
+    innerPngUrl: PNG_CATCHER_URL,
+  });
+
+  res.status(catcher.status).set(catcher.headers).send(Buffer.from(catcher.body));
+});
+```
+
+### Advanced: multiple instances
+
+Use `phishingModuleApiFactory` to create independent SDK instances (useful when protecting multiple projects from one service):
+
+```javascript
+import { phishingModuleApiFactory } from "@botbye/node-core";
+import { nodePhishingHttpClient } from "@botbye/node-core/phishing-node-http-client";
+
+const phishingA = phishingModuleApiFactory({ httpClient: nodePhishingHttpClient });
+const phishingB = phishingModuleApiFactory({ httpClient: nodePhishingHttpClient });
+
+phishingA.init({
+  clientKey: "00000000-0000-0000-0000-000000000000",
+});
+
+phishingB.init({
+  clientKey: "11111111-1111-1111-1111-111111111111",
+});
 ```
 
 ## Documentation

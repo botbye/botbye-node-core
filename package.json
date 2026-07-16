@@ -1,6 +1,6 @@
 {
   "name": "@botbye/node-core",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "BotBye! core module for Node.js",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -11,19 +11,29 @@
       "types": "./src/index.d.ts"
     },
     "./node-http-client": {
-      "import": "./src/HttpClients/Clients/NodeHttpClient/NodeHttpClient.js",
-      "require": "./src/HttpClients/Clients/NodeHttpClient/NodeHttpClient.js",
-      "types": "./src/HttpClients/Clients/NodeHttpClient/NodeHttpClient.d.ts"
+      "import": "./src/BotFraud/HttpClients/Clients/NodeHttpClient/NodeHttpClient.js",
+      "require": "./src/BotFraud/HttpClients/Clients/NodeHttpClient/NodeHttpClient.js",
+      "types": "./src/BotFraud/HttpClients/Clients/NodeHttpClient/NodeHttpClient.d.ts"
     },
     "./fetch-http-client": {
-      "import": "./src/HttpClients/Clients/FetchHttpClient/FetchHttpClient.js",
-      "require": "./src/HttpClients/Clients/FetchHttpClient/FetchHttpClient.js",
-      "types": "./src/HttpClients/Clients/FetchHttpClient/FetchHttpClient.d.ts"
+      "import": "./src/BotFraud/HttpClients/Clients/FetchHttpClient/FetchHttpClient.js",
+      "require": "./src/BotFraud/HttpClients/Clients/FetchHttpClient/FetchHttpClient.js",
+      "types": "./src/BotFraud/HttpClients/Clients/FetchHttpClient/FetchHttpClient.d.ts"
     },
     "./utils": {
-      "import": "./src/Global/Utils.js",
-      "require": "./src/Global/Utils.js",
-      "types": "./src/Global/Utils.d.ts"
+      "import": "./src/Shared/Global/Utils.js",
+      "require": "./src/Shared/Global/Utils.js",
+      "types": "./src/Shared/Global/Utils.d.ts"
+    },
+    "./phishing-node-http-client": {
+      "import": "./src/Phishing/HttpClients/NodePhishingHttpClient.js",
+      "require": "./src/Phishing/HttpClients/NodePhishingHttpClient.js",
+      "types": "./src/Phishing/HttpClients/NodePhishingHttpClient.d.ts"
+    },
+    "./phishing-fetch-http-client": {
+      "import": "./src/Phishing/HttpClients/FetchPhishingHttpClient.js",
+      "require": "./src/Phishing/HttpClients/FetchPhishingHttpClient.js",
+      "types": "./src/Phishing/HttpClients/FetchPhishingHttpClient.d.ts"
     }
   },
   "files": [
