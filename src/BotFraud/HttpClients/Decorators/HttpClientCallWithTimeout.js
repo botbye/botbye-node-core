@@ -14,9 +14,9 @@ var httpClientCallWithTimeout = function (callResult, global, timeoutMs, meta) {
         }
         throw reason;
     });
-    return ({
+    return {
         result: result,
         abort: callResult.abort,
-    });
+    };
 };
 exports.httpClientCallWithTimeout = httpClientCallWithTimeout;

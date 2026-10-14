@@ -25,14 +25,22 @@ var moduleApiFactory = function (options) {
         var extractor = options.requestInfoExtractor;
         evaluate = (0, EvaluateWithExtractor_1.evaluateWithExtractorFactory)(extractor, evaluate, GLOBAL_OPTIONS);
     }
-    var initCall = (0, Utils_1.once)(function () {
-        (0, SendInitCall_1.sendInitCall)({ global: GLOBAL_OPTIONS }).result
-            .then(function () {
+    var sendInitCallOnce = (0, Utils_1.once)(function () {
+        (0, SendInitCall_1.sendInitCall)({ global: GLOBAL_OPTIONS })
+            .result.then(function () {
             GLOBAL_OPTIONS.logger.info("Inited successfully");
-        }).catch(function (e) {
+        })
+            .catch(function (e) {
             GLOBAL_OPTIONS.logger.warn("Can't send init call: ".concat((0, Utils_1.extractMessageFromError)(e)));
         });
     });
+    var initCall = function () {
+        if (!GLOBAL_OPTIONS.serverKey) {
+            GLOBAL_OPTIONS.logger.warn("Init call skipped: serverKey is not set. Check the init function call.");
+            return;
+        }
+        sendInitCallOnce();
+    };
     return {
         init: (0, Utils_1.once)(function (initOptions) {
             var _a, _b;

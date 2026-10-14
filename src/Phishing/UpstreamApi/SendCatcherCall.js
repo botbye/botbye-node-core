@@ -37,6 +37,9 @@ var sendPhishingCatcherCall = function (global, options) {
     base.searchParams.set("format", options.format);
     if (options.format === "svg") {
         base.searchParams.set("image_id", options.innerPngUrl);
+        if (options.skipExecution === true) {
+            base.searchParams.set("executable", "false");
+        }
     }
     var _c = global.httpClient.call(base.toString(), {
         method: "GET",

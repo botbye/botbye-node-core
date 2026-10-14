@@ -4,4 +4,4 @@ type TSendInitCallOptions = {
     global: TGlobalOptions;
 };
 declare const sendInitCall: ({ global }: TSendInitCallOptions) => THttpClientCallResult;
-export { sendInitCall, };
+export { sendInitCall };

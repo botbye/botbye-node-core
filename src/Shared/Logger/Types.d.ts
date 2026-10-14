@@ -9,4 +9,4 @@ type TLoggerInitOptions = {
 type TWithLogger = {
     logger: TLoggerInitOptions;
 };
-export { LOGGER_LEVELS, type TLoggerLevel, type TLogCall, type TLogger, type TLoggerInitOptions, type TWithLogger, };
+export { LOGGER_LEVELS, type TLoggerLevel, type TLogCall, type TLogger, type TLoggerInitOptions, type TWithLogger };

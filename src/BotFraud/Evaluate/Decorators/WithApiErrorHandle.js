@@ -24,37 +24,40 @@ var isValidResponse = function (response) {
     if (!("scores" in response) || !(0, Utils_1.isPlainObject)(response.scores)) {
         return false;
     }
-    if (("botbye_result" in response) && !(0, Utils_1.isString)(response.botbye_result)) {
+    if ("botbye_result" in response && !(0, Utils_1.isString)(response.botbye_result)) {
         return false;
     }
-    if (("challenge" in response) && (!(0, Utils_1.isPlainObject)(response.challenge) || !(0, Utils_1.isString)(response.challenge.type))) {
+    if ("challenge" in response && (!(0, Utils_1.isPlainObject)(response.challenge) || !(0, Utils_1.isString)(response.challenge.type))) {
         return false;
     }
     return true;
 };
-var withApiErrorHandle = function (factory, _global) { return new Promise(function (res) {
-    try {
-        factory().result
-            .then(function (v) {
-            var parsed = null;
-            try {
-                parsed = JSON.parse(v);
-            }
-            catch (e) {
-                res((0, Utils_2.createFallbackEvaluationResult)(ErrorCodes_1.JSON_ERROR));
-                return;
-            }
-            if (!isValidResponse(parsed)) {
-                res((0, Utils_2.createFallbackEvaluationResult)(ErrorCodes_1.JSON_ERROR));
-                return;
-            }
-            res(parsed);
-        }).catch(function (e) {
-            res((0, Utils_2.createFallbackEvaluationResult)((0, ErrorCodes_1.classifyRequestError)(e)));
-        });
-    }
-    catch (e) {
-        res((0, Utils_2.createFallbackEvaluationResult)(ErrorCodes_1.SDK_ERROR));
-    }
-}); };
+var withApiErrorHandle = function (factory, _global) {
+    return new Promise(function (res) {
+        try {
+            factory()
+                .result.then(function (v) {
+                var parsed = null;
+                try {
+                    parsed = JSON.parse(v);
+                }
+                catch (e) {
+                    res((0, Utils_2.createFallbackEvaluationResult)(ErrorCodes_1.JSON_ERROR));
+                    return;
+                }
+                if (!isValidResponse(parsed)) {
+                    res((0, Utils_2.createFallbackEvaluationResult)(ErrorCodes_1.JSON_ERROR));
+                    return;
+                }
+                res(parsed);
+            })
+                .catch(function (e) {
+                res((0, Utils_2.createFallbackEvaluationResult)((0, ErrorCodes_1.classifyRequestError)(e)));
+            });
+        }
+        catch (e) {
+            res((0, Utils_2.createFallbackEvaluationResult)(ErrorCodes_1.SDK_ERROR));
+        }
+    });
+};
 exports.withApiErrorHandle = withApiErrorHandle;

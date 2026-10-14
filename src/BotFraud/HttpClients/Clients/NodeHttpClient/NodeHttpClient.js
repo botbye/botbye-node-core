@@ -85,10 +85,10 @@ var nodeHttpClient = {
                 }
             };
         });
-        return ({
+        return {
             abort: abort,
             result: result,
-        });
+        };
     },
 };
 exports.nodeHttpClient = nodeHttpClient;

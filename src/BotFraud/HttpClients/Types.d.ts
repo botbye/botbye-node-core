@@ -14,4 +14,4 @@ type THttpClient = {
     type: string;
     call: THttpClientCall;
 };
-export type { THttpClient, THttpClientCallInit, THttpClientCallResult, };
+export type { THttpClient, THttpClientCallInit, THttpClientCallResult };

@@ -48,15 +48,22 @@ var phishingModuleApiFactory = function (options) {
         httpClient: options.httpClient,
         logger: logger,
     };
-    var initCall = (0, Utils_1.once)(function () {
-        (0, SendInitCall_1.sendPhishingInitCall)({ global: GLOBAL_OPTIONS }).result
-            .then(function () {
+    var sendInitCallOnce = (0, Utils_1.once)(function () {
+        (0, SendInitCall_1.sendPhishingInitCall)({ global: GLOBAL_OPTIONS })
+            .result.then(function () {
             GLOBAL_OPTIONS.logger.info("Phishing inited successfully");
         })
             .catch(function (e) {
             GLOBAL_OPTIONS.logger.warn("Can't send phishing init call: ".concat((0, Utils_1.extractMessageFromError)(e)));
         });
     });
+    var initCall = function () {
+        if (!GLOBAL_OPTIONS.clientKey) {
+            GLOBAL_OPTIONS.logger.warn("Phishing init call skipped: clientKey is not set. Check the init function call.");
+            return;
+        }
+        sendInitCallOnce();
+    };
     var init = (0, Utils_1.once)(function (initOptions) {
         var _a, _b;
         (0, InitTypeguards_1.assertInitOptions)(initOptions);

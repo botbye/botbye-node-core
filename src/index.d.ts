@@ -1,4 +1,4 @@
-export type { TModuleApiFactoryOptions, TInitOptions, TModuleApi, TEventWithRequest, } from "./BotFraud/ModuleApi/Types";
+export type { TModuleApiFactoryOptions, TInitOptions, TModuleApi, TEventWithRequest } from "./BotFraud/ModuleApi/Types";
 export { moduleApiFactory } from "./BotFraud/ModuleApi/ModuleApiFactory";
 export type { TRequestInfoExtractor } from "./Shared/RequestInfoExtractor";
 export type { TNullable } from "./Shared/Global/Utils";

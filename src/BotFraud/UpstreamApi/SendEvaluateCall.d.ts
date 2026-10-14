@@ -4,4 +4,4 @@ type TSendEvaluateCall = {
     event: TUpstreamEvent;
 } & TWithGlobalOptions;
 declare const sendEvaluateCall: ({ global, event }: TSendEvaluateCall) => import("../HttpClients/Types").THttpClientCallResult;
-export { sendEvaluateCall, };
+export { sendEvaluateCall };

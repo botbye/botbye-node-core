@@ -24,6 +24,6 @@ type TInitOptions = Partial<TWithLogger> & {
 };
 type TModuleApi<RequestObject = never> = TWithDevMethods & {
     init(options: TInitOptions): void;
-    evaluate: RequestObject extends never ? TEvaluate : (event: TEventWithRequest<RequestObject>) => Promise<TEvaluationResult>;
+    evaluate: [RequestObject] extends [never] ? TEvaluate : (event: TEventWithRequest<RequestObject>) => Promise<TEvaluationResult>;
 };
-export type { TModuleApi, TModuleApiFactoryOptions, TInitOptions, TEventWithRequest, };
+export type { TModuleApi, TModuleApiFactoryOptions, TInitOptions, TEventWithRequest };

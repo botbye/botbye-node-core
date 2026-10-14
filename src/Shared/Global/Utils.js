@@ -24,18 +24,17 @@ var isPlainObject = function (value) {
     return proto === Object.prototype || proto === null;
 };
 exports.isPlainObject = isPlainObject;
-var toString = function (value) { return isString(value) ? value : String(value); };
+var toString = function (value) { return (isString(value) ? value : String(value)); };
 exports.toString = toString;
 var isKeyExist = function (obj, key) { return isObject(obj) && key in obj; };
 exports.isKeyExist = isKeyExist;
 var withTimeout = function (promise, timeoutMs, errorCode) {
-    var timeoutPromise = new Promise(function (_, rej) { return setTimeout(function () {
-        rej(errorCode);
-    }, timeoutMs); });
-    return Promise.race([
-        promise,
-        timeoutPromise,
-    ]);
+    var timeoutPromise = new Promise(function (_, rej) {
+        return setTimeout(function () {
+            rej(errorCode);
+        }, timeoutMs);
+    });
+    return Promise.race([promise, timeoutPromise]);
 };
 exports.withTimeout = withTimeout;
 var extractMessageFromError = function (e) {
@@ -47,11 +46,12 @@ var extractMessageFromError = function (e) {
 };
 exports.extractMessageFromError = extractMessageFromError;
 var extractFirstIpFromHeaderValue = function (value) {
+    var _a;
     var raw = Array.isArray(value) ? value[0] : value;
     if (!isString(raw)) {
         return null;
     }
-    var ip = raw.split(",")[0].trim();
+    var ip = (_a = raw.split(",")[0]) === null || _a === void 0 ? void 0 : _a.trim();
     return ip || null;
 };
 var getIpFromHeaders = function (headers) {

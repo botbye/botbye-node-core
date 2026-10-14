@@ -21,5 +21,5 @@ type TFailedEvaluationResult = TCommonEvaluationResult & {
 };
 type TEvaluationResult = TFailedEvaluationResult | TSuccessfulEvaluationResult;
 type TEvaluate = (event: TEvent) => Promise<TEvaluationResult>;
-export { EVALUATE_DECISIONS, };
-export type { TEvaluate, TDecision, TEvaluationResult, TCommonEvaluationResult, TSuccessfulEvaluationResult, TFailedEvaluationResult, };
+export { EVALUATE_DECISIONS };
+export type { TEvaluate, TDecision, TEvaluationResult, TCommonEvaluationResult, TSuccessfulEvaluationResult, TFailedEvaluationResult };

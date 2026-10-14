@@ -16,4 +16,4 @@ type TWithDevMethods = {
         getLogger(): TLogger;
     };
 };
-export type { TWithModuleInfo, TWithLogger, TWithDevMethods, };
+export type { TWithModuleInfo, TWithLogger, TWithDevMethods };

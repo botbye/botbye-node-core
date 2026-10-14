@@ -22,8 +22,7 @@ var sendEvaluateCall = function (_a) {
         var withToken = new URL("".concat(baseUrl, "?").concat((_b = event.request.token) !== null && _b !== void 0 ? _b : ""));
         baseUrl = withToken.href;
     }
-    catch (_c) {
-    }
+    catch (_c) { }
     return global.httpClient.call(baseUrl, {
         method: "POST",
         headers: (0, Utils_1.getModuleHeaders)(global),

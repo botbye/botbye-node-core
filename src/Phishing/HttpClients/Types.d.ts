@@ -17,4 +17,4 @@ type TPhishingHttpClient = {
     type: string;
     call(url: string, init: TPhishingHttpRequestInit): TPhishingHttpClientCallResult;
 };
-export type { TPhishingHttpResponse, TPhishingHttpRequestInit, TPhishingHttpClientCallResult, TPhishingHttpClient, };
+export type { TPhishingHttpResponse, TPhishingHttpRequestInit, TPhishingHttpClientCallResult, TPhishingHttpClient };

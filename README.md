@@ -408,7 +408,18 @@ Check `result.decision` to decide how to handle the request:
 - `"BLOCK"` — bot or suspicious activity detected, block the request
 - `"CHALLENGE"` — uncertain, consider issuing a CAPTCHA, MFA or additional verification step
 
-When the response contains an `error` field, BotBye could not evaluate the request (e.g. invalid server key). In that case `decision` defaults to `"ALLOW"` so that a misconfiguration does not block real users — but you should monitor and fix the underlying error.
+When the response contains an `error` field, the request was not fully evaluated. An **integration error** fails **closed** with `decision: "BLOCK"` and `signals: ["evaluation_error"]` — a malformed payload, or a key that resolves to no project (`Invalid server key`, or `Invalid site key` for a visit-call; keys are UUIDs, so a wrong one parses cleanly and only fails lookup). A **BotBye-side failure** fails **open** with `decision: "ALLOW"`, so our own fault does not block real users, and the **SDK** does the same, with no `request_id`, when it never received a decision at all — request timeout, connection error, or an unparseable response. Monitor `error.message` either way and fix the underlying cause.
+
+### What your plan is told
+
+`risk_score`, `scores` and the detector `signals` are filled in from the **Starter** plan up. On **Free** the
+verdict is the same and `request_id` is still there, but those three come back blanked: `risk_score` is `0.0`,
+`scores` is `{}`, and `signals` keeps only the reasons that name something on your side rather than a
+detector of ours — `token_expected`, `script_loading_error`, `token_generation_error`, `raw_token_changed`
+and `banned_by_rule`, the verdict of a rule you wrote yourself.
+
+The protection behaves identically on every plan; only the explanation of a decision is withheld. So branch
+on `decision`, never on `risk_score` — a threshold over it reads every Free-plan request as low risk.
 
 ### Response examples
 
@@ -449,12 +460,25 @@ Challenge:
 }
 ```
 
-Invalid `serverKey`:
+Invalid `serverKey` — not a known project (fail-closed):
+
+```json
+{
+  "request_id": "f77b2abd-c5d7-44f0-be4f-174b04876583",
+  "decision": "BLOCK",
+  "risk_score": 1.0,
+  "scores": {},
+  "signals": ["evaluation_error"],
+  "error": { "message": "Invalid server key" }
+}
+```
+
+SDK never received a decision (fail-open):
 
 ```json
 {
   "decision": "ALLOW",
-  "error": { "message": "[BotBye] Bad Request: Invalid Server Key" }
+  "error": { "message": "connection error" }
 }
 ```
 

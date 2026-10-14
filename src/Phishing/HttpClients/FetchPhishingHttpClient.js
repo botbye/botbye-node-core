@@ -53,7 +53,8 @@ var fetchPhishingHttpClient = {
             headers: init.headers,
             body: (0, Utils_2.bodyToJson)(init.body),
             signal: controller.signal,
-        }).then(function (response) { return __awaiter(_this, void 0, void 0, function () {
+        })
+            .then(function (response) { return __awaiter(_this, void 0, void 0, function () {
             var headers, arrayBuffer;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -72,7 +73,8 @@ var fetchPhishingHttpClient = {
                             }];
                 }
             });
-        }); }).catch(function (e) {
+        }); })
+            .catch(function (e) {
             throw new Error("".concat(Constants_1.REQUEST_ERROR_CODE, " ").concat((0, Utils_1.extractMessageFromError)(e)));
         });
         return {

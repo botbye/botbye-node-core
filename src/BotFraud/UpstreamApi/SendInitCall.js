@@ -12,8 +12,7 @@ var sendInitCall = function (_a) {
             serverKey: global.serverKey,
         },
     }), baseResult = _b.result, abort = _b.abort;
-    var result = baseResult
-        .then(function (r) {
+    var result = baseResult.then(function (r) {
         var parsed = { error: "Unknown error" };
         try {
             parsed = JSON.parse(r);

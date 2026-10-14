@@ -11,4 +11,4 @@ type TPhishingGlobalOptions = TWithModuleInfo & TWithLogger & {
 type TWithPhishingGlobalOptions = {
     global: TPhishingGlobalOptions;
 };
-export type { TPhishingGlobalOptions, TWithPhishingGlobalOptions, };
+export type { TPhishingGlobalOptions, TWithPhishingGlobalOptions };

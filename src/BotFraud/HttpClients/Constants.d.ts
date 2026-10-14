@@ -1,2 +1,2 @@
 declare const BASE_REQUEST_TIMEOUT = 1500;
-export { BASE_REQUEST_TIMEOUT, };
+export { BASE_REQUEST_TIMEOUT };

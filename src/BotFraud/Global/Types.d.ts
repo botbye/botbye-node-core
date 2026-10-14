@@ -11,4 +11,4 @@ type TGlobalOptions = TWithModuleInfo & TWithLogger & {
 type TWithGlobalOptions = {
     global: TGlobalOptions;
 };
-export type { TGlobalOptions, TWithGlobalOptions, };
+export type { TGlobalOptions, TWithGlobalOptions };
