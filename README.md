@@ -366,7 +366,7 @@ async function handleLogin({ ip, headers, method, url, token, email, password })
       status: loginSucceeded ? "SUCCESSFUL" : "FAILED",
     },
     user: {
-      accountId: user?.id ?? "unknown",
+      accountId: user?.id ?? "",
       email,
     },
   });
